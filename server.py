@@ -20,4 +20,4 @@ def signal():
     }
 
 if name == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=int(__import__("os").environ.get("PORT", 5000)))
