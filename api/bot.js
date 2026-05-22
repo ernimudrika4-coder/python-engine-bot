@@ -4,7 +4,7 @@ const features = require("../features");
 const axios = require("axios");
 const app = express();
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
-
+require("dotenv").config();
 features.register(bot);
 
 app.use(express.json());
