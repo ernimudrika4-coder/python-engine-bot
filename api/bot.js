@@ -1,17 +1,27 @@
-const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
 const features = require("../features");
-const axios = require("axios");
-const app = express();
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
-require("dotenv").config();
+
+const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+
+if (!TOKEN) {
+  console.error("TELEGRAM_BOT_TOKEN missing");
+}
+
+const bot = new TelegramBot(TOKEN);
+
+// register commands
 features.register(bot);
 
-app.use(express.json());
+module.exports = async (req, res) => {
+  try {
+    if (req.method === "POST") {
+      await bot.processUpdate(req.body);
+      return res.status(200).send("OK");
+    }
 
-app.post("/api/bot", (req, res) => {
-  bot.processUpdate(req.body);
-  res.send("OK");
-});
-
-module.exports = app;
+    return res.status(200).send("Bot is alive");
+  } catch (err) {
+    console.error("Webhook error:", err.message);
+    return res.status(200).send("OK");
+  }
+};
